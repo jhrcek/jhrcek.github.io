@@ -15,47 +15,7 @@
 <body>
   <script src="js/elm.js"></script>
   <script>
-    /* Feature detect localStorage, based on
-                https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API#Feature-detecting_localStorage */
-    function isLocalStorageSupported() {
-      try {
-        var storage = window['localStorage'],
-          x = '__storage_test__';
-        storage.setItem(x, x);
-        storage.removeItem(x);
-        return true;
-      } catch (e) {
-        return e instanceof DOMException && (
-            e.code === 22 ||
-            e.code === 1014 ||
-            e.name === 'QuotaExceededError' ||
-            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-          storage.length !== 0;
-      }
-    }
-
-    function getFlags() {
-      var strategyJson = null;
-      var localStorageSupported = isLocalStorageSupported();
-      if (localStorageSupported) {
-        var strategyString = localStorage.getItem('persistedStrategy');
-        strategyJson = strategyString ? JSON.parse(strategyString) : null;
-      } else {
-        console.log("Váš prohlížeč nepodporuje ukládání strategie");
-      }
-      return {
-        "localStorageSupported": localStorageSupported,
-        "persistedStrategy": strategyJson
-      };
-    }
-
-    var flags = getFlags();
-    var app = Elm.Main.fullscreen(flags);
-
-    /* Port for saving strategy to localStorage */
-    app.ports.persistValue.subscribe(function(strategy) {
-      localStorage.setItem('persistedStrategy', JSON.stringify(strategy));
-    });
+    Elm.Main.fullscreen()
   </script>
 </body>
 
