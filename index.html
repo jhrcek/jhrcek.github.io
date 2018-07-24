@@ -1,59 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>janhrcek.cz - About Me</title>
+        <link rel="stylesheet" href="./css/default.css" />
+    </head>
+    <body>
+        <header>
+            <div class="logo">
+                <a href="./">Jan Hrček</a>
+            </div>
+            <nav>
+                <a href="./">About Me</a>
+                <a href="./projects.html">Projects</a>
+                <a href="./contact.html">Contact</a>
+            </nav>
+        </header>
 
-<head>
-  <meta charset="utf-8">
-  <title>Jan Hrček's Personal Web Page</title>
-  <link rel="stylesheet" href="https://unpkg.com/tachyons@4.8.1/css/tachyons.min.css" />
-</head>
+        <main role="main">
+            <h1>About Me</h1>
+            <p><img class="profile-photo" src="images/jhrcek.jpg" alt="Jan Hrček"></p>
+<p>My name is Jan Hrček and since 2009 I hold a master’s degree in Computer Science from Masaryk University, <a href="https://www.muni.cz/en/about-us/organizational-structure/faculty-of-informatics">Faculty of Informatics</a>.</p>
+<p>Currently I work as a Senior Quality Engineer at <a href="https://www.redhat.com/en">Red Hat</a> in Brno, Czech Republic. I am a member of RHBA Quality Assurance team responsible for quality of <a href="https://www.redhat.com/en/technologies/jboss-middleware/decision-manager">RHDM</a> and <a href="https://www.redhat.com/en/technologies/jboss-middleware/process-automation-manager">RHBA</a> products, which are based on <a href="http://www.kiegroup.org/">KIE Group</a> open-source projects.</p>
+<p>My job role involves close collaboration with project management and developers on many tasks throughout project life cycle which includes:</p>
+<ul>
+<li>product specification</li>
+<li>pull request reviews</li>
+<li>development, maintenance and execution of automated test suites</li>
+<li>reporting of bugs found and verification of bug fixes</li>
+<li>overseeing and consulting with junior team members</li>
+</ul>
+<p>I am experienced Java programmer, holder of <em>Oracle Certified Associate, Java SE 7 Programmer</em> and <em>Oracle Certified Professional, Java SE 7 Programmer</em> certificates. I am also Functional Programming enthusiast with several years of experience using <a href="https://www.haskell.org/">Haskell</a> and <a href="http://elm-lang.org/">Elm</a> languages in hobby and work-related <a href="./projects.html">projects</a>. Here is an incomplete list of software and technologies I use on daily basis and am comfortable/proficient with: Linux (mostly Fedora and occasionally playing with Nix), Java, Maven, Git, Jenkins, Jira, GWT (Google Web Toolkit), Selenium, HTML, CSS, Haskell (GHCi, Stack), Elm, Graphviz, Docker, SQL, Relational databases (PostgreSQL, SQLite), IntelliJ IDEA, Atom, Vim …</p>
+<p>I also love learning stuff about Mathematics, in particular Algebra, Combinatorics, Graph Theory and Category Theory. I have a long lasting interest in theory that makes it possible to create more robust and reliable software.</p>
+<p>I am native Czech speaker, but am also fluent in English (holder of Cambridge <em>FCE</em> certificate) and I am intermediate German speaker.</p>
+<p>You can find more about me in my <a href="https://www.linkedin.com/in/jan-hrcek-b5147822/">LinkedIn</a> and <a href="https://github.com/jhrcek">GitHub</a> profiles.</p>
+        </main>
 
-<body>
-  <div class="mw8 center sans-serif">
-    <h1 class="f1">Jan's Hobby Projects</h1>
-    <p class="fl">My name is Jan Hrček and I work as Quality Engineer at Red Hat, focusing on testing software based on <a href="http://www.kiegroup.org/" class="link underline blue hover-orange">KIE Group</a> Open source projects.</p>
-    <p class="fl">In my free time I am passionate about functional programming, in particular I enjoy working with <a href="https://www.haskell.org/" class="link underline blue hover-orange">Haskell</a> and <a href="http://elm-lang.org/" class="link underline blue hover-orange">Elm</a>.
-      I also love learning stuff related to Mathematics, in particular Combinatorics, Algebra and Category Theory.</p>
-    <p class="fl">This page serves as a list of several projects I've been working on in my free time. The source code of my projects is available in my
-      <a href="https://github.com/jhrcek" class="link underline blue hover-orange">GitHub page</a>.</p>
-
-    <table class="collapse ba br2 b--black-10 pv2 ph3">
-      <tr class="striped--light-gray">
-        <th class="pv2 ph3 tl f6 fw6 ttu">Project page</th>
-        <th class="pv2 ph3 tl f6 fw6 ttu">What is it?</th>
-        <th class="pv2 ph3 tl f6 fw6 ttu">Source code</th>
-      </tr>
-      <tr class="striped--light-gray">
-        <td class="pv2 ph3"><a href="/kiegroup-dependencies" class="link underline blue hover-orange">Kiegroup dependencies</a></td>
-        <td class="pv2 ph3">A work related project, the goal of which is to facilitate analysis of maven dependencies used in various project's modules</td>
-        <td class="pv2 ph3"><a href="https://github.com/jhrcek/kiegroup-dependencies" class="link underline blue hover-orange">source</a></td>
-      </tr>
-      <tr class="striped--light-gray">
-        <td class="pv2 ph3"><a href="/random-failures" class="link underline blue hover-orange">Random failure analysis</a></td>
-        <td class="pv2 ph3">A work related project, the goal of which is to help identify random test failures in CI build pipeline of KIE Group projects</td>
-        <td class="pv2 ph3"><a href="https://github.com/jhrcek/random-failures" class="link underline blue hover-orange">source</a></td>
-      </tr>
-      <tr class="striped--light-gray">
-        <td class="pv2 ph3"><a href="/graph-editor" class="link underline blue hover-orange">Graph editor</a></td>
-        <td class="pv2 ph3">A simple SVG-based directed graph editor implemented in Elm</td>
-        <td class="pv2 ph3"><a href="https://github.com/jhrcek/graph-editor" class="link underline blue hover-orange">source</a></td>
-      </tr>
-      <tr class="striped--light-gray">
-        <td class="pv2 ph3"><a href="https://robozonky.github.io/robozonky/konfigurace-strategie/" class="link underline blue hover-orange">Natural strategy setup</a></td>
-        <td class="pv2 ph3">A configuration tool for user friendly creation of strategy configuration files for <a href="https://robozonky.github.io/robozonky/" class="link underline blue hover-orange">RoboZonky</a></td>
-        <td class="pv2 ph3"><a href="https://github.com/RoboZonky/natural-strategy-setup" class="link underline blue hover-orange">source</a></td>
-      </tr>
-      <tr class="striped--light-gray">
-        <td class="pv2 ph3"><a href="/graph-layout-experiment" class="link underline blue hover-orange">Graph Layout Experiment</a></td>
-        <td class="pv2 ph3">Experimental reimplementation of <a href="https://mazzo.li/posts/graph-drawing.html" class="link underline blue hover-orange">this Haskell project</a> in Elm</td>
-        <td class="pv2 ph3"><a href="https://github.com/jhrcek/force-layout" class="link underline blue hover-orange">source</a></td>
-      </tr>
-      <tr class="striped--light-gray">
-        <td class="pv2 ph3"><a href="/force-layout-benchmark" class="link underline blue hover-orange">Graph layout benchmark</a></td>
-        <td class="pv2 ph3">Experimenting with <a href="http://package.elm-lang.org/packages/gampleman/elm-visualization/1.5.0/Visualization-Force" class="link underline blue hover-orange">elm-visualization</a>'s implementation of force directed layout algorithm</td>
-        <td class="pv2 ph3"><a href="https://github.com/jhrcek/force-layout-benchmark" class="link underline blue hover-orange">source</a></td>
-      </tr>
-    </table>
-  </div>
-</body>
-
+        <footer>
+            Generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+        </footer>
+    </body>
 </html>
