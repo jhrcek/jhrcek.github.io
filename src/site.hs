@@ -6,26 +6,33 @@ import           Hakyll
 
 --------------------------------------------------------------------------------
 main :: IO ()
-main = hakyll $ do
+main = hakyllWith myConfig $ do
     match "images/*" $ do
-        route   idRoute
+        route idRoute
         compile copyFileCompiler
 
     match "css/*" $ do
-        route   idRoute
+        route idRoute
         compile compressCssCompiler
 
-    match (fromList [ "index.markdown"
-                    , "contact.markdown"
-                    , "projects.markdown"
-                    ]) $ do
-        route   $ setExtension "html"
+    match pages $ do
+        route $ setExtension "html"
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
             >>= relativizeUrls
 
     match "templates/*" $ compile templateBodyCompiler
 
+myConfig :: Configuration
+myConfig =
+    defaultConfiguration { deployCommand = "cp -r _site/* .." }
+
+pages :: Pattern
+pages = fromList
+    [ "index.markdown"
+    , "contact.markdown"
+    , "projects.markdown"
+    ]
 
 --------------------------------------------------------------------------------
 postCtx :: Context String
