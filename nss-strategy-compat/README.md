@@ -7,4 +7,5 @@ testing app for backward compatibility testing of strategy parsing.
 | 2 | 5.1.0 + | [v0.2](https://github.com/RoboZonky/natural-strategy-setup/tree/v0.2) | [v0.2](https://janhrcek.cz/nss-strategy-compat/v2/) |
 | 3 | 5.3.0 + | [v0.3](https://github.com/RoboZonky/natural-strategy-setup/tree/v0.3) | [v0.3](https://janhrcek.cz/nss-strategy-compat/v3/) |
 | 4 | 5.4.0 + | [v0.4](https://github.com/RoboZonky/natural-strategy-setup/tree/v0.4) | [v0.4](https://janhrcek.cz/nss-strategy-compat/v4/) |
-| 5 | 5.6.0 + | TODO | TODO|
+| 5 | 5.6.0 + | [v0.5](https://github.com/RoboZonky/natural-strategy-setup/tree/v0.5) | [v0.5](https://janhrcek.cz/nss-strategy-compat/v5/) |
+| 6 | 5.7.0 + | TODO | TODO |
