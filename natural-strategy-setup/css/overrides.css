@@ -1,0 +1,92 @@
+/* Make text in tabs with rangle sliders non-selectable to prevent drag and drop issues */
+
+.tab-with-sliders {
+  user-select: none !important;
+  -moz-user-select: none !important;
+}
+
+/* 2nd of 2 parts of the workaround for https://github.com/RoboZonky/natural-strategy-setup/issues/8 */
+
+.card-open [id$=Card] {
+  height: 100% !important;
+}
+
+/* After migration to Elm 0.19 rundis/elm-bootstrap 4.1.0 -> 5.1.0 renders accordion toggles with too small font and too large padding */
+.card-header > button {
+  font-size: 24px;
+  padding: 0px;
+}
+
+.condition-subform-container {
+  overflow-x: hidden;
+  /* scrollbar so that modal footer doesn't disappear below the bottom of viewport, when too many conditions enabled */
+  overflow-y: auto;
+  /* 60% viewport height */
+  max-height: 60vh;
+  min-height: 40vh;
+}
+
+.condition-subform {
+  border: solid 1px lightgrey !important;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 2px;
+}
+
+/* This is to achieve overlapping of "a nebo" pill badge with individual filter cards */
+
+.or-connective {
+  position: relative;
+  z-index: 1;
+  margin-top: -10px;
+  margin-bottom: -10px;
+  margin-left: -20px;
+}
+
+.fieldset-legend-help {
+  font-size: 16px;
+}
+
+/* Slider thumb Firefox */
+.investment-slider::-moz-range-thumb {
+  border: 1px solid #000;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #999;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000, 0px 0px 1px #0d0d0d;
+}
+
+/* Slider thumb Chrome */
+.investment-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: 1px solid #000;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #999;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000, 0px 0px 1px #0d0d0d;
+  margin-top: -7px;
+}
+
+/* Slider track Chrome */
+.investment-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  background: #ddd;
+  border-radius: 2px;
+  border: 0.2px solid #010101;
+}
+
+/* Slider track Firefox */
+.investment-slider::-moz-range-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  background: #ddd;
+  border-radius: 2px;
+  border: 0.2px solid #010101;
+}
