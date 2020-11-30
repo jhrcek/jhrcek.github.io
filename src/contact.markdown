@@ -2,4 +2,4 @@
 title: Contact
 ---
 
-You can contact me directly by email *honza.hrk &lt;at&gt; gmail.com*.
+You can contact me by email *honza.hrk &lt;at&gt; gmail.com*.
