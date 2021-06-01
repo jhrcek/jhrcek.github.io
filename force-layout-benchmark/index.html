@@ -5270,6 +5270,8 @@ var $author$project$Main$initialModel = {
 	drag: $elm$core$Maybe$Nothing,
 	graph: $elm_community$graph$Graph$empty,
 	nodeCountToGenerate: 10,
+	pruefer: _List_Nil,
+	showNodeLabels: false,
 	simulation: $gampleman$elm_visualization$Force$simulation(_List_Nil),
 	windowSize: {height: 768, width: 1024}
 };
@@ -6697,10 +6699,6 @@ var $author$project$Main$Drag = F3(
 	function (start, current, index) {
 		return {current: current, index: index, start: start};
 	});
-var $author$project$Main$Model = F5(
-	function (drag, graph, simulation, nodeCountToGenerate, windowSize) {
-		return {drag: drag, graph: graph, nodeCountToGenerate: nodeCountToGenerate, simulation: simulation, windowSize: windowSize};
-	});
 var $elm$core$Basics$clamp = F3(
 	function (low, high, number) {
 		return (_Utils_cmp(number, low) < 0) ? low : ((_Utils_cmp(number, high) > 0) ? high : number);
@@ -7681,6 +7679,51 @@ var $elm_community$graph$Graph$mapContexts = function (f) {
 		},
 		$elm_community$graph$Graph$empty);
 };
+var $author$project$Pruefer$getLeafWithMinimalId = A2(
+	$elm_community$graph$Graph$fold,
+	F2(
+		function (ctx, acc) {
+			if (!$elm_community$intdict$IntDict$size(ctx.outgoing)) {
+				if (acc.$ === 'Nothing') {
+					return $elm$core$Maybe$Just(ctx);
+				} else {
+					var oldCtx = acc.a;
+					return (_Utils_cmp(ctx.node.id, oldCtx.node.id) < 0) ? $elm$core$Maybe$Just(ctx) : acc;
+				}
+			} else {
+				return acc;
+			}
+		}),
+	$elm$core$Maybe$Nothing);
+var $elm_community$intdict$IntDict$keys = function (dict) {
+	return A3(
+		$elm_community$intdict$IntDict$foldr,
+		F3(
+			function (key, value, keyList) {
+				return A2($elm$core$List$cons, key, keyList);
+			}),
+		_List_Nil,
+		dict);
+};
+var $author$project$Pruefer$prueferSequence = function (g) {
+	var _v0 = $author$project$Pruefer$getLeafWithMinimalId(g);
+	if (_v0.$ === 'Nothing') {
+		return _List_Nil;
+	} else {
+		var leaf = _v0.a;
+		var _v1 = $elm_community$intdict$IntDict$keys(leaf.incoming);
+		if (_v1.b && (!_v1.b.b)) {
+			var parentKey = _v1.a;
+			return A2(
+				$elm$core$List$cons,
+				parentKey,
+				$author$project$Pruefer$prueferSequence(
+					A2($elm_community$graph$Graph$remove, leaf.node.id, g)));
+		} else {
+			return _List_Nil;
+		}
+	}
+};
 var $author$project$Main$setGraph = F2(
 	function (graph, model) {
 		var newGraph = A2(
@@ -7723,6 +7766,7 @@ var $author$project$Main$setGraph = F2(
 			{
 				drag: $elm$core$Maybe$Nothing,
 				graph: newGraph,
+				pruefer: $author$project$Pruefer$prueferSequence(newGraph),
 				simulation: $gampleman$elm_visualization$Force$simulation(forces)
 			});
 	});
@@ -9305,32 +9349,28 @@ var $author$project$Main$updateNode = F2(
 	});
 var $author$project$Main$updateModel = F2(
 	function (msg, model) {
-		var drag = model.drag;
-		var graph = model.graph;
-		var simulation = model.simulation;
-		var nodeCountToGenerate = model.nodeCountToGenerate;
-		var windowSize = model.windowSize;
 		switch (msg.$) {
 			case 'Tick':
 				var _v1 = A2(
 					$gampleman$elm_visualization$Force$tick,
-					simulation,
+					model.simulation,
 					A2(
 						$elm$core$List$map,
 						function ($) {
 							return $.label;
 						},
-						$elm_community$graph$Graph$nodes(graph)));
+						$elm_community$graph$Graph$nodes(model.graph)));
 				var newState = _v1.a;
 				var list = _v1.b;
-				var newGraph = A2($author$project$Main$updateGraphWithList, graph, list);
-				if (drag.$ === 'Nothing') {
+				var newGraph = A2($author$project$Main$updateGraphWithList, model.graph, list);
+				var _v2 = model.drag;
+				if (_v2.$ === 'Nothing') {
 					return _Utils_update(
 						model,
 						{graph: newGraph, simulation: newState});
 				} else {
-					var current = drag.a.current;
-					var index = drag.a.index;
+					var current = _v2.a.current;
+					var index = _v2.a.index;
 					return _Utils_update(
 						model,
 						{
@@ -9354,41 +9394,42 @@ var $author$project$Main$updateModel = F2(
 					});
 			case 'DragAt':
 				var xy = msg.a;
-				if (drag.$ === 'Just') {
-					var start = drag.a.start;
-					var index = drag.a.index;
-					return A5(
-						$author$project$Main$Model,
-						$elm$core$Maybe$Just(
-							A3($author$project$Main$Drag, start, xy, index)),
-						A3(
-							$elm_community$graph$Graph$update,
-							index,
-							$elm$core$Maybe$map(
-								$author$project$Main$updateNode(xy)),
-							graph),
-						$gampleman$elm_visualization$Force$reheat(simulation),
-						nodeCountToGenerate,
-						windowSize);
+				var _v3 = model.drag;
+				if (_v3.$ === 'Just') {
+					var start = _v3.a.start;
+					var index = _v3.a.index;
+					return _Utils_update(
+						model,
+						{
+							drag: $elm$core$Maybe$Just(
+								A3($author$project$Main$Drag, start, xy, index)),
+							graph: A3(
+								$elm_community$graph$Graph$update,
+								index,
+								$elm$core$Maybe$map(
+									$author$project$Main$updateNode(xy)),
+								model.graph),
+							simulation: $gampleman$elm_visualization$Force$reheat(model.simulation)
+						});
 				} else {
 					return model;
 				}
 			case 'DragEnd':
 				var xy = msg.a;
-				if (drag.$ === 'Just') {
-					var index = drag.a.index;
-					return A5(
-						$author$project$Main$Model,
-						$elm$core$Maybe$Nothing,
-						A3(
-							$elm_community$graph$Graph$update,
-							index,
-							$elm$core$Maybe$map(
-								$author$project$Main$updateNode(xy)),
-							graph),
-						simulation,
-						nodeCountToGenerate,
-						windowSize);
+				var _v4 = model.drag;
+				if (_v4.$ === 'Just') {
+					var index = _v4.a.index;
+					return _Utils_update(
+						model,
+						{
+							drag: $elm$core$Maybe$Nothing,
+							graph: A3(
+								$elm_community$graph$Graph$update,
+								index,
+								$elm$core$Maybe$map(
+									$author$project$Main$updateNode(xy)),
+								model.graph)
+						});
 				} else {
 					return model;
 				}
@@ -9415,13 +9456,17 @@ var $author$project$Main$updateModel = F2(
 				return _Utils_update(
 					model,
 					{windowSize: newSize});
-			default:
+			case 'Zoom':
 				var scaleFactor = msg.a;
 				return _Utils_update(
 					model,
 					{
 						graph: A3($author$project$Main$scaleGraph, scaleFactor, model.windowSize, model.graph)
 					});
+			default:
+				return _Utils_update(
+					model,
+					{showNodeLabels: !model.showNodeLabels});
 		}
 	});
 var $author$project$Main$update = F2(
@@ -9444,8 +9489,18 @@ var $author$project$Main$ChangeGeneratorParam = function (a) {
 	return {$: 'ChangeGeneratorParam', a: a};
 };
 var $author$project$Main$GenerateNewTree = {$: 'GenerateNewTree'};
+var $author$project$Main$ToggleNodeLabels = {$: 'ToggleNodeLabels'};
+var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -9454,6 +9509,14 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			key,
 			$elm$json$Json$Encode$string(string));
 	});
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$label = _VirtualDom_node('label');
 var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
 var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
@@ -9509,10 +9572,10 @@ var $elm$html$Html$span = _VirtualDom_node('span');
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$svg$Svg$Attributes$type_ = _VirtualDom_attribute('type');
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
-var $author$project$Main$viewControls = function (nodeCountToGenerate) {
+var $author$project$Main$viewControls = function (model) {
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -9523,17 +9586,17 @@ var $author$project$Main$viewControls = function (nodeCountToGenerate) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$svg$Svg$text('Generate random tree with ')
+						$elm$html$Html$text('Generate random tree with ')
 					])),
 				A2(
 				$elm$html$Html$input,
 				_List_fromArray(
 					[
 						$elm$svg$Svg$Attributes$type_('number'),
-						$elm$html$Html$Attributes$min('0'),
+						$elm$html$Html$Attributes$min('1'),
 						$elm$html$Html$Attributes$max('1000'),
 						$elm$html$Html$Attributes$value(
-						$elm$core$String$fromInt(nodeCountToGenerate)),
+						$elm$core$String$fromInt(model.nodeCountToGenerate)),
 						A2($elm$html$Html$Attributes$style, 'width', '3em'),
 						$elm$html$Html$Events$onInput($author$project$Main$ChangeGeneratorParam)
 					]),
@@ -9543,7 +9606,7 @@ var $author$project$Main$viewControls = function (nodeCountToGenerate) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$svg$Svg$text(' nodes ')
+						$elm$html$Html$text(' nodes ')
 					])),
 				A2(
 				$elm$html$Html$button,
@@ -9553,7 +9616,44 @@ var $author$project$Main$viewControls = function (nodeCountToGenerate) {
 					]),
 				_List_fromArray(
 					[
-						$elm$svg$Svg$text('Go!')
+						$elm$html$Html$text('Go!')
+					])),
+				A2(
+				$elm$html$Html$label,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$input,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$type_('checkbox'),
+								$elm$html$Html$Attributes$checked(model.showNodeLabels),
+								$elm$html$Html$Events$onClick($author$project$Main$ToggleNodeLabels)
+							]),
+						_List_Nil),
+						$elm$html$Html$text('Show node labels')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$a,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$href('https://en.wikipedia.org/wiki/Pr%C3%BCfer_sequence')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Prüfer sequence')
+							])),
+						$elm$html$Html$text(
+						' of this tree is: ' + A2(
+							$elm$core$String$join,
+							',',
+							A2($elm$core$List$map, $elm$core$String$fromInt, model.pruefer)))
 					]))
 			]));
 };
@@ -9564,7 +9664,69 @@ var $elm$svg$Svg$Attributes$class = _VirtualDom_attribute('class');
 var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
 var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
 var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
+var $author$project$Main$DragStart = F2(
+	function (a, b) {
+		return {$: 'DragStart', a: a, b: b};
+	});
+var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
+var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var $elm$svg$Svg$Attributes$dominantBaseline = _VirtualDom_attribute('dominant-baseline');
+var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
 var $elm$core$String$fromFloat = _String_fromNumber;
+var $elm$svg$Svg$Events$on = $elm$html$Html$Events$on;
+var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$svg$Svg$Attributes$textAnchor = _VirtualDom_attribute('text-anchor');
+var $elm$svg$Svg$text_ = $elm$svg$Svg$trustedNode('text');
+var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
+var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
+var $author$project$Main$labeledNode = function (node) {
+	return A2(
+		$elm$svg$Svg$g,
+		_List_fromArray(
+			[
+				A2(
+				$elm$svg$Svg$Events$on,
+				'mousedown',
+				A2(
+					$elm$json$Json$Decode$map,
+					$author$project$Main$DragStart(node.id),
+					$author$project$Main$mousePosition))
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$svg$Svg$circle,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$r('10'),
+						$elm$svg$Svg$Attributes$fill('black'),
+						$elm$svg$Svg$Attributes$cx(
+						$elm$core$String$fromFloat(node.label.x)),
+						$elm$svg$Svg$Attributes$cy(
+						$elm$core$String$fromFloat(node.label.y))
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$text_,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$x(
+						$elm$core$String$fromFloat(node.label.x)),
+						$elm$svg$Svg$Attributes$y(
+						$elm$core$String$fromFloat(node.label.y)),
+						$elm$svg$Svg$Attributes$dominantBaseline('central'),
+						$elm$svg$Svg$Attributes$textAnchor('middle'),
+						$elm$svg$Svg$Attributes$fill('white')
+					]),
+				_List_fromArray(
+					[
+						$elm$svg$Svg$text(
+						$elm$core$String$fromInt(node.id))
+					]))
+			]));
+};
 var $elm$svg$Svg$line = $elm$svg$Svg$trustedNode('line');
 var $author$project$Main$lookupEntity = function (nodeId) {
 	return A2(
@@ -9613,18 +9775,8 @@ var $author$project$Main$linkElement = F2(
 	});
 var $elm$json$Json$Decode$float = _Json_decodeFloat;
 var $author$project$Main$mouseWheelDecoder = A2($elm$json$Json$Decode$field, 'deltaY', $elm$json$Json$Decode$float);
-var $author$project$Main$DragStart = F2(
-	function (a, b) {
-		return {$: 'DragStart', a: a, b: b};
-	});
-var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
-var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
-var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
-var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
-var $elm$svg$Svg$Events$on = $elm$html$Html$Events$on;
-var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
 var $elm$svg$Svg$title = $elm$svg$Svg$trustedNode('title');
-var $author$project$Main$nodeElement = function (node) {
+var $author$project$Main$simpleNode = function (node) {
 	return A2(
 		$elm$svg$Svg$circle,
 		_List_fromArray(
@@ -9655,10 +9807,12 @@ var $author$project$Main$nodeElement = function (node) {
 					]))
 			]));
 };
+var $elm$svg$Svg$style = $elm$svg$Svg$trustedNode('style');
 var $elm$svg$Svg$Attributes$style = _VirtualDom_attribute('style');
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
 var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
 var $author$project$Main$viewGraph = function (model) {
+	var nodeView = model.showNodeLabels ? $author$project$Main$labeledNode : $author$project$Main$simpleNode;
 	return A2(
 		$elm$svg$Svg$svg,
 		_List_fromArray(
@@ -9680,6 +9834,13 @@ var $author$project$Main$viewGraph = function (model) {
 		_List_fromArray(
 			[
 				A2(
+				$elm$svg$Svg$style,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$text('text{user-select:none;}')
+					])),
+				A2(
 				$elm$svg$Svg$g,
 				_List_fromArray(
 					[
@@ -9697,7 +9858,7 @@ var $author$project$Main$viewGraph = function (model) {
 					]),
 				A2(
 					$elm$core$List$map,
-					$author$project$Main$nodeElement,
+					nodeView,
 					$elm_community$graph$Graph$nodes(model.graph)))
 			]));
 };
@@ -9707,7 +9868,7 @@ var $author$project$Main$view = function (model) {
 		_List_Nil,
 		_List_fromArray(
 			[
-				$author$project$Main$viewControls(model.nodeCountToGenerate),
+				$author$project$Main$viewControls(model),
 				$author$project$Main$viewGraph(model)
 			]));
 };
